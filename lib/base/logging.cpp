@@ -239,14 +239,13 @@ static void KernelLogLine(const char* msg, int length, android::base::LogSeverit
                           const char* tag) {
   // clang-format off
   static constexpr int kLogSeverityToKernelLogLevel[] = {
-      [android::base::VERBOSE] = 7,              // KERN_DEBUG (there is no verbose kernel log
-                                                 //             level)
-      [android::base::DEBUG] = 7,                // KERN_DEBUG
-      [android::base::INFO] = 6,                 // KERN_INFO
-      [android::base::WARNING] = 4,              // KERN_WARNING
-      [android::base::ERROR] = 3,                // KERN_ERROR
-      [android::base::FATAL_WITHOUT_ABORT] = 2,  // KERN_CRIT
-      [android::base::FATAL] = 2,                // KERN_CRIT
+    /* [android::base::VERBOSE] = */ 7,              // KERN_DEBUG (there is no verbose kernel log level)
+    /* [android::base::DEBUG] = */ 7,                // KERN_DEBUG
+    /* [android::base::INFO] = */ 6,                 // KERN_INFO
+    /* [android::base::WARNING] = */ 4,              // KERN_WARNING
+    /* [android::base::ERROR] = */ 3,                // KERN_ERROR
+    /* [android::base::FATAL_WITHOUT_ABORT] = */ 2,  // KERN_CRIT
+    /* [android::base::FATAL] = */ 2,                // KERN_CRIT
   };
   // clang-format on
   static_assert(arraysize(kLogSeverityToKernelLogLevel) == android::base::FATAL + 1,

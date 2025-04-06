@@ -67,7 +67,9 @@ static void SplitByLogdChunks(LogId log_id, LogSeverity severity, const char* ta
   }
   int file_header_size = file_header.size();
 
-  __attribute__((uninitialized)) char logd_chunk[max_size + 1];
+  // Use a fixed buffer instead of a variable length array
+  const int max_buffer_size = LOGGER_ENTRY_MAX_PAYLOAD;
+  char logd_chunk[max_buffer_size + 1];
   ptrdiff_t chunk_position = 0;
 
   auto call_log_function = [&]() {

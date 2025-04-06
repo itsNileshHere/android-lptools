@@ -17,6 +17,7 @@
 #include <unistd.h>
 #include <string.h>
 
+#include <algorithm>
 #include <iostream>
 #include <optional>
 

@@ -378,13 +378,13 @@ bool ImageBuilder::AddPartitionImage(const LpMetadataPartition& partition,
             }
         }
 
-        uint32_t buffer[block_size_ / sizeof(uint32_t)];
-        size_t read_size = remaining >= sizeof(buffer) ? sizeof(buffer) : size_t(remaining);
-        if (!android::base::ReadFully(fd, buffer, sizeof(buffer))) {
+        std::vector<uint32_t> buffer(block_size_ / sizeof(uint32_t));
+        size_t read_size = remaining >= buffer.size() * sizeof(uint32_t) ? buffer.size() * sizeof(uint32_t) : size_t(remaining);
+        if (!android::base::ReadFully(fd, buffer.data(), buffer.size() * sizeof(uint32_t))) {
             PERROR << "read failed";
             return false;
         }
-        if (read_size != sizeof(buffer) || !HasFillValue(buffer, read_size / sizeof(uint32_t))) {
+        if (read_size != buffer.size() * sizeof(uint32_t) || !HasFillValue(buffer.data(), read_size / sizeof(uint32_t))) {
             int rv = sparse_file_add_fd(output_device, fd, pos, read_size, output_block);
             if (rv) {
                 LERROR << "sparse_file_add_fd failed with code: " << rv;

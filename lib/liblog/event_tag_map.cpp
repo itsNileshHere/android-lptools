@@ -87,8 +87,11 @@ class MapString {
 
 // Hash for MapString
 template <>
-struct std::hash<MapString>
-    : public std::unary_function<const MapString&, size_t> {
+struct std::hash<MapString> {
+  // Define argument_type and result_type to replace unary_function
+  typedef MapString argument_type;
+  typedef size_t result_type;
+  
   size_t operator()(const MapString& __t) const noexcept {
     if (!__t.length()) return 0;
     return std::hash<std::string_view>()(std::string_view(__t));
@@ -98,7 +101,11 @@ struct std::hash<MapString>
 typedef std::pair<MapString, MapString> TagFmt;
 
 template <>
-struct std::hash<TagFmt> : public std::unary_function<const TagFmt&, size_t> {
+struct std::hash<TagFmt> {
+  // Define argument_type and result_type to replace unary_function
+  typedef TagFmt argument_type;
+  typedef size_t result_type;
+  
   size_t operator()(const TagFmt& __t) const noexcept {
     // Tag is typically unique.  Will cost us an extra 100ns for the
     // unordered_map lookup if we instead did a hash that combined
