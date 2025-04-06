@@ -16,13 +16,9 @@
    previously by the compressor and transmitted to the decompressor by some
    mechanism outside the scope of this compression library.) Upon exit,
    *destLen is the size of the decompressed data and *sourceLen is the number
-   of source bytes consumed. Upon return, source + *sourceLen points to the
-   first unused input byte.
-
-     uncompress returns Z_OK if success, Z_MEM_ERROR if there was not enough
-   memory, Z_BUF_ERROR if there was not enough room in the output buffer, or
-   Z_DATA_ERROR if the input data was corrupted, including if the input data is
-   an incomplete zlib stream.
+   of source bytes consumed. The source buffer may be larger than needed. The
+   function result is Z_OK on success, or one of Z_ERRNO, Z_STREAM_ERROR
+   or Z_DATA_ERROR if any error happens.
 */
 int ZEXPORT uncompress2(Bytef *dest, uLongf *destLen, const Bytef *source, uLong *sourceLen)
 {
