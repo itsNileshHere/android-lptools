@@ -22,7 +22,7 @@ rm -r *.o
 unset src
 
 cd ../zlib
-$CC -I. -O3 -DHAVE_HIDDEN -DZLIB_CONST ${CFLAGS} -c adler32.c compress.c cpu_features.c crc32.c deflate.c gzclose.c gzlib.c gzread.c gzwrite.c infback.c inflate.c inftrees.c inffast.c trees.c uncompr.c zutil.c
+$CC -I. -O3 -std=c99 -Wno-deprecated-non-prototype -DHAVE_HIDDEN -DZLIB_CONST ${CFLAGS} -c adler32.c compress.c cpu_features.c crc32.c deflate.c gzclose.c gzlib.c gzread.c gzwrite.c infback.c inflate.c inftrees.c inffast.c trees.c uncompr.c zutil.c
 $AR rcs ../lib/libz.a *.o
 rm -r *.o
 
@@ -61,7 +61,7 @@ $AR rcs ../lib/libext4_utils.a *.o
 rm -r *.o
 
 cd ../libcrypto_utils
-$CC -Iinclude -I../boringssl/include ${CFLAGS} -c android_pubkey.c
+$CC -std=c99 -Wno-deprecated-non-prototype -Iinclude -I../boringssl/include ${CFLAGS} -c android_pubkey.c
 $AR rcs ../lib/libcrypto_utils.a *.o
 rm -r *.o
 
@@ -191,6 +191,7 @@ fi
         $CC -Iinclude -std=c99 \
         ${CFLAGS} \
         ${CFLAGS_CRYPTO} \
+        -Wno-deprecated-non-prototype \
         -DBORINGSSL_IMPLEMENTATION \
         -fvisibility=hidden \
         -DBORINGSSL_SHARED_LIBRARY \
