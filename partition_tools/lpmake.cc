@@ -73,7 +73,8 @@ static int usage(int /* argc */, char* argv[]) {
             "\n"
             "Partition data format:\n"
             "  <name>:<attributes>:<size>[:group]\n"
-            "  Attrs must be 'none' or 'readonly'.\n"
+            "  Attrs must be 'none', 'readonly', 'updated', 'disabled', or 'slot-suffixed'.\n"
+            "  Multiple attributes can be combined with commas.\n"
             "\n"
             "Device data format:\n"
             "  <partition_name>:<size>[:<alignment>:<alignment_offset>]\n"
@@ -115,7 +116,7 @@ int main(int argc, char* argv[]) {
         { "metadata-slots", required_argument, nullptr, (int)Option::kMetadataSlots },
         { "partition", required_argument, nullptr, (int)Option::kPartition },
         { "output", required_argument, nullptr, (int)Option::kOutput },
-        { "help", no_argument, nullptr, (int)Option::kOutput },
+        { "help", no_argument, nullptr, (int)Option::kHelp },
         { "alignment-offset", required_argument, nullptr, (int)Option::kAlignmentOffset },
         { "alignment", required_argument, nullptr, (int)Option::kAlignment },
         { "sparse", no_argument, nullptr, (int)Option::kSparse },
@@ -365,12 +366,19 @@ int main(int argc, char* argv[]) {
         }
 
         uint32_t attribute_flags = 0;
-        std::string attributes = parts[1];
-        if (attributes == "readonly") {
-            attribute_flags |= LP_PARTITION_ATTR_READONLY;
-        } else if (attributes != "none") {
-            fprintf(stderr, "Attribute not recognized: %s\n", attributes.c_str());
-            return EX_USAGE;
+        for (const auto& attribute : android::base::Split(parts[1], ",")) {
+            if (attribute == "readonly") {
+                attribute_flags |= LP_PARTITION_ATTR_READONLY;
+            } else if (attribute == "slot-suffixed") {
+                attribute_flags |= LP_PARTITION_ATTR_SLOT_SUFFIXED;
+            } else if (attribute == "updated") {
+                attribute_flags |= LP_PARTITION_ATTR_UPDATED;
+            } else if (attribute == "disabled") {
+                attribute_flags |= LP_PARTITION_ATTR_DISABLED;
+            } else if (attribute != "none") {
+                fprintf(stderr, "Attribute not recognized: %s\n", attribute.c_str());
+                return EX_USAGE;
+            }
         }
 
         std::string group_name = "default";

@@ -76,6 +76,10 @@ static std::string BuildHeaderFlagString(uint32_t flags) {
         strings.emplace_back("virtual_ab_device");
         flags &= ~LP_HEADER_FLAG_VIRTUAL_AB_DEVICE;
     }
+    if (flags & LP_HEADER_FLAG_OVERLAYS_ACTIVE) {
+        strings.emplace_back("overlays_active");
+        flags &= ~LP_HEADER_FLAG_OVERLAYS_ACTIVE;
+    }
 
     for (uint32_t i = 0; i < sizeof(flags) * 8; i++) {
         if (!(flags & (1U << i))) {

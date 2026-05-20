@@ -18,7 +18,9 @@
 
 #include <errno.h>
 #include <fcntl.h>
+#if !defined(_WIN32)
 #include <ftw.h>
+#endif
 #include <libgen.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -171,6 +173,7 @@ TemporaryDir::TemporaryDir() {
 TemporaryDir::~TemporaryDir() {
   if (!remove_dir_and_contents_) return;
 
+#if !defined(_WIN32)
   auto callback = [](const char* child, const struct stat*, int file_type, struct FTW*) -> int {
     switch (file_type) {
       case FTW_D:
@@ -197,6 +200,7 @@ TemporaryDir::~TemporaryDir() {
   };
 
   nftw(path, callback, 128, FTW_DEPTH | FTW_MOUNT | FTW_PHYS);
+#endif
 }
 
 bool TemporaryDir::init(const std::string& tmp_dir) {
@@ -419,7 +423,16 @@ bool Readlink(const std::string& path, std::string* result) {
 }
 #endif
 
-#if !defined(_WIN32)
+#if defined(_WIN32)
+bool Realpath(const std::string& path, std::string* result) {
+  std::wstring path_w;
+  if (!android::base::UTF8ToWide(path, &path_w)) return false;
+  wchar_t full_path[MAX_PATH];
+  DWORD length = GetFullPathNameW(path_w.c_str(), MAX_PATH, full_path, nullptr);
+  if (length == 0 || length >= MAX_PATH) return false;
+  return android::base::WideToUTF8(full_path, result);
+}
+#else
 bool Realpath(const std::string& path, std::string* result) {
   result->clear();
 
